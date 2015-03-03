@@ -1,0 +1,34 @@
+*---------------------------------------------------------------------*
+* Report Foo
+*---------------------------------------------------------------------*
+
+Report Foo.
+
+types:
+  gty_t_mara type standard table of mara.
+  
+data:
+  gt_mara type gty_t_mara.
+  
+start-of-selection.
+
+  select * up to 50 rows
+    from mara
+    into table gt_mara.
+  
+  perform print using gt_mara.
+
+" Print material numbers
+form print using ut_mara type gty_t_mara.
+  field-symbols:
+    <ls_mara> type mara.
+  
+  write: / 'Material Numbers'.
+  write: / '----------------'.
+  
+  loop at ut_mara assigning <ls_mara>.
+    write: / <ls_mara>-matnr.
+  endloop.
+endform.
+
+ 
