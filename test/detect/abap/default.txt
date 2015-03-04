@@ -31,4 +31,8 @@ form print using ut_mara type gty_t_mara.
   endloop.
 endform.
 
+form number.
+  data: lv_integer type i value 0.
+endform.
+
  
