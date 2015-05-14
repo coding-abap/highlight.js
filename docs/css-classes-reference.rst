@@ -1357,3 +1357,14 @@ PF ("pf", "pf.conf")
 * ``number``:           number
 * ``string``:           string
 * ``variable``:         used for both macros and tables
+
+ABAP (""abap)
+-------------
+
+* ``multiword``:        multiword keywords
+* ``operator``:         operator
+* ``simple``            simple keywords
+* ``coment``            coment
+* ``string``            string
+* ``number``            number
+* ``type``              predefined types
