@@ -39,10 +39,29 @@ https://highlightjs.org/
     return match && match.index == 0;
   }
 
+  function isNotHighlighted(language) {
+    return /no-?highlight|plain|text/.test(language);
+  }
+
   function blockLanguage(block) {
-    var classes = (block.className + ' ' + (block.parentNode ? block.parentNode.className : '')).split(/\s+/);
-    classes = classes.map(function(c) {return c.replace(/^lang(uage)?-/, '');});
-    return classes.filter(function(c) {return getLanguage(c) || /no(-?)highlight|plain|text/.test(c);})[0];
+    var i, match, length,
+        classes = block.className + ' ';
+
+    classes += block.parentNode ? block.parentNode.className : '';
+
+    // language-* takes precedence over non-prefixed class names and
+    match = /\blang(?:uage)?-([\w-]+)\b/.exec(classes);
+    if (match) {
+      return getLanguage(match[1]) ? match[1] : 'no-highlight';
+    }
+
+    classes = classes.split(/\s+/);
+    for(i = 0, length = classes.length; i < length; i++) {
+      if(getLanguage(classes[i]) || isNotHighlighted(classes[i])) {
+        return classes[i];
+      }
+    }
+
   }
 
   function inherit(parent, obj) {
@@ -276,6 +295,9 @@ https://highlightjs.org/
 
     function endOfMode(mode, lexeme) {
       if (testRe(mode.endRe, lexeme)) {
+        while (mode.endsParent && mode.parent) {
+          mode = mode.parent;
+        }
         return mode;
       }
       if (mode.endsWithParent) {
@@ -540,7 +562,7 @@ https://highlightjs.org/
   */
   function highlightBlock(block) {
     var language = blockLanguage(block);
-    if (/no(-?)highlight|plain|text/.test(language))
+    if (isNotHighlighted(language))
         return;
 
     var node;
@@ -668,21 +690,26 @@ https://highlightjs.org/
   hljs.PHRASAL_WORDS_MODE = {
     begin: /\b(a|an|the|are|I|I'm|isn't|don't|doesn't|won't|but|just|should|pretty|simply|enough|gonna|going|wtf|so|such)\b/
   };
-  hljs.C_LINE_COMMENT_MODE = {
-    className: 'comment',
-    begin: '//', end: '$',
-    contains: [hljs.PHRASAL_WORDS_MODE]
+  hljs.COMMENT = function (begin, end, inherits) {
+    var mode = hljs.inherit(
+      {
+        className: 'comment',
+        begin: begin, end: end,
+        contains: []
+      },
+      inherits || {}
+    );
+    mode.contains.push(hljs.PHRASAL_WORDS_MODE);
+    mode.contains.push({
+      className: 'doctag',
+      beginKeywords: "TODO FIXME NOTE BUG XXX",
+      relevance: 0
+    });
+    return mode;
   };
-  hljs.C_BLOCK_COMMENT_MODE = {
-    className: 'comment',
-    begin: '/\\*', end: '\\*/',
-    contains: [hljs.PHRASAL_WORDS_MODE]
-  };
-  hljs.HASH_COMMENT_MODE = {
-    className: 'comment',
-    begin: '#', end: '$',
-    contains: [hljs.PHRASAL_WORDS_MODE]
-  };
+  hljs.C_LINE_COMMENT_MODE = hljs.COMMENT('//', '$');
+  hljs.C_BLOCK_COMMENT_MODE = hljs.COMMENT('/\\*', '\\*/');
+  hljs.HASH_COMMENT_MODE = hljs.COMMENT('#', '$');
   hljs.NUMBER_MODE = {
     className: 'number',
     begin: hljs.NUMBER_RE,

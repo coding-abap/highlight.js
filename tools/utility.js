@@ -1,6 +1,7 @@
 'use strict';
 
 var _    = require('lodash');
+var fs   = require('fs');
 var path = require('path');
 
 var REPLACES,
@@ -46,6 +47,7 @@ REPLACES = {
   'REGEXP_MODE': 'RM',
   'TITLE_MODE': 'TM',
   'UNDERSCORE_TITLE_MODE': 'UTM',
+  'COMMENT': 'C',
 
   'beginRe': 'bR',
   'endRe': 'eR',
@@ -71,30 +73,28 @@ function replaceClassNames(match) {
 }
 
 function parseHeader(content) {
-  var object  = {},
-      headers,
+  var headers,
       match = content.match(headerRegex);
 
   if (!match) {
     return null;
   }
 
-  headers = match[1].split('\n');
-  _(headers)
-    .compact()
-    .each(function(h) {
-      var keyVal = h.trim().split(': '),
-          key    = keyVal[0],
-          value  = keyVal[1] || "";
+  headers = _.compact(match[1].split('\n'));
 
-      if(key !== 'Description' && key !== 'Language') {
-        value = value.split(/\s*,\s*/);
-      }
+  return _.foldl(headers, function(result, header) {
+    var keyVal = header.trim().split(': '),
+        key    = keyVal[0],
+        value  = keyVal[1] || '';
 
-      object[key] = value;
-    });
+    if(key !== 'Description' && key !== 'Language') {
+      value = value.split(/\s*,\s*/);
+    }
 
-  return object;
+    result[key] = value;
+
+    return result;
+  }, {});
 }
 
 function filterByQualifiers(blob, languages, categories) {
@@ -132,8 +132,26 @@ function glob(pattern, encoding) {
   return { pattern: pattern, limit: 50, encoding: encoding };
 }
 
+function getStyleNames() {
+  var stylesDir      = path.join('src', 'styles'),
+      stylesDirFiles = fs.readdirSync(stylesDir),
+      styles         = _.filter(stylesDirFiles, function(file) {
+                         return path.extname(file) === '.css' &&
+                                file !== 'default.css';
+                       });
+
+  return _.map(styles, function(style) {
+    var basename = path.basename(style, '.css'),
+        name     = _.startCase(basename),
+        pathName = path.join('styles', style);
+
+    return { path: pathName, name: name };
+  });
+}
+
 module.exports = {
   buildFilterCallback: buildFilterCallback,
+  getStyleNames: getStyleNames,
   glob: glob,
   parseHeader: parseHeader,
   regex: regex,

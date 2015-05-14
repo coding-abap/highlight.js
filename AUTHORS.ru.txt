@@ -156,3 +156,12 @@ URL:   https://highlightjs.org/
 - Кента Сато <bicycle1885@gmail.com>
 - Тофик Нурроман <latitudu.latitudu@gmail.com>
 - Педро Оливейра <kanytu@gmail.com>
+- Гу Илинь <justice360@gmail.com>
+- Томас Аппленкур <thomas.applencourt@irsamc.ups-tlse.fr>
+- Эндрю Фармер <ahfarmer@gmail.com>
+- Сергей Машков <cy6erGn0m@gmail.com>
+- Кеннет Фаглсанг <kfuglsang@gmail.com>
+- Райво Ляэнеметс <raivo@infdot.com>
+- Дэвид Ансон <david@dlaa.me>
+- Льюис Барранкуэйро <louis.barranqueiro@gmail.com>
+- Тим Шумахер <tim@datenknoten.me>

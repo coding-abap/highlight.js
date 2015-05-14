@@ -1,13 +1,15 @@
 'use strict';
 
-var _        = require('lodash');
-var del      = require('del');
-var gear     = require('gear');
-var path     = require('path');
-var fs       = require('fs');
+var _       = require('lodash');
+var del     = require('del');
+var gear    = require('gear');
+var path    = require('path');
+var fs      = require('fs');
+var utility = require('./utility');
 
-var parseHeader = require('./utility').parseHeader;
-var tasks       = require('gear-lib');
+var parseHeader   = utility.parseHeader;
+var getStyleNames = utility.getStyleNames;
+var tasks         = require('gear-lib');
 
 tasks.clean = function(directories, blobs, done) {
   directories = _.isString(directories) ? [directories] : directories;
@@ -73,7 +75,7 @@ tasks.template = function(options, blob, done) {
 
     hasTemplate = _.contains(_.keys(options), basename);
     template    = hasTemplate ? options[basename] : options.template;
-    content     = _.template(template, data);
+    content     = _.template(template)(data);
 
     newBlob = new gear.Blob(content, blob);
   } else {
@@ -90,7 +92,7 @@ tasks.templateAll = function(template, blobs, done) {
     return path.basename(blob.name, '.js');
   });
 
-  content = _.template(template, { names: names });
+  content = _.template(template)({ names: names });
 
   return done(null, [new blobs[0].constructor(content, blobs)]);
 };
@@ -212,7 +214,7 @@ tasks.filter.type = 'collect';
 tasks.readSnippet = function(options, blob, done) {
   var name        = path.basename(blob.name, '.js'),
       fileInfo    = parseHeader(blob.result),
-      snippetName = path.join(dir.root, 'test', 'detect', name, 'default.txt');
+      snippetName = path.join('test', 'detect', name, 'default.txt');
 
   function onRead(error, blob) {
     if (error !== null) return done(null, null); // ignore missing snippets
@@ -222,13 +224,18 @@ tasks.readSnippet = function(options, blob, done) {
   }
 
   gear.Blob.readFile(snippetName, 'utf8', onRead, false);
-}
+};
 
 tasks.templateDemo = function(options, blobs, done) {
-  var name = path.join(dir.root, 'demo', 'index.html'),
+  var name     = path.join('demo', 'index.html'),
       template = fs.readFileSync(name, 'utf8'),
-      blobs = _.filter(blobs, Boolean), // drop missing blobs
-      content = _.template(template, { path: path, blobs: blobs });
+      newBlobs = _.compact(blobs), // drop missing blobs
+      content  = _.template(template)({
+                   path: path,
+                   blobs: newBlobs,
+                   styles: getStyleNames()
+                 });
+
   return done(null, [new gear.Blob(content)]);
 };
 tasks.templateDemo.type = 'collect';
