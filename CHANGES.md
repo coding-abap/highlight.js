@@ -5,6 +5,7 @@ New languages:
 - *C/AL* by [Kenneth Fuglsang][]
 - *DNS zone file* by [Tim Schumacher][]
 - *Ceylon* by [Lucas Werkmeister][]
+- *Abap* by [Pablo Escalada][]
 
 New Styles:
 
@@ -24,6 +25,7 @@ Notable fixes and improvements to existing languages:
 [Louis Barranqueiro]: https://github.com/LouisBarranqueiro
 [Tim Schumacher]: https://github.com/enko
 [Lucas Werkmeister]: https://github.com/lucaswerkmeister
+[Pablo Escalada]: https://github.com/diesire
 
 ## Version 8.5
 
