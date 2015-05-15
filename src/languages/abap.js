@@ -9,7 +9,7 @@ function(hljs) {
   };
   
   var multiword = {
-    className: 'multiword',
+    className: 'keyword',
     lexemes: '[a-z-]+',
     beginKeywords: 'add-corresponding authority-check bit-and bit-not bit-or bit-xor break-point class-data class-events class-methods class-pool divide-corresponding editor-call end-of-definition end-of-page end-of-selection exit-command field-groups field-symbols function-pool help-id help-request interface-pool left-justified line-count line-selection line-size list-processing load-of-program message-id move-corresponding multiply-corresponding new-line new-page no-gaps no-gap no-heading non-unique no-scrolling no-sign no-title no-zero output-length pf-status print-control right-justified scroll-boundary selection-screen selection-table select-options start-of-selection subtract-corresponding syntax-check syntax-trace system-call system-exceptions top-of-page type-pools type-pool user-command value-request with-title',
 	relevance: 10
