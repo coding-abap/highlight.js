@@ -51,6 +51,24 @@ function(hljs) {
     className: 'type',
 	begin: /\b(type)\b\s+\b(c|d|f|i|n|p|t|x)\b/
   };
+  
+  var PARAMS = {
+    className: 'params',
+	      beginKeywords: 'importing exporting returning using changing raising',
+        contains: [BASIC_TYPE],
+        endsWithParent: true
+  };
+  
+  var FUNCTION = {
+    className: 'function',
+	  beginKeywords: 'function method form endfunction endmethod endform',
+    end: ',|\\.',
+    contains: [
+      LINE_COMMENT_MODE,
+      simple,
+      PARAMS
+    ]
+  };
 
   return {
     case_insensitive: true,
@@ -61,6 +79,7 @@ function(hljs) {
       GRAVE_ACENT_STRING,
 	  NUMBER,
 	  BASIC_TYPE,
+    FUNCTION,
 	  multiword,
 	  operator,
 	  simple
